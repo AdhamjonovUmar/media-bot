@@ -30,7 +30,38 @@ public class BotHandlers
         var handler = update.Type switch
         {
             UpdateType.Message => BotOnMessageRecieved(client, update.Message),
-            
+            _ => UnknownUpdateHandler(client, update)
         };
+        try
+        {
+            await handler;
+        }
+        catch(Exception e)
+        {
+            _logger.LogWarning(e.Message);
+        }
+    }
+
+    private Task UnknownUpdateHandler(ITelegramBotClient client, Update update)
+    {
+        throw new Exception("This type update can not be handled.");
+    }
+
+    private async Task BotOnMessageRecieved(ITelegramBotClient client, Message? message)
+    {
+        if(message.Text == "/start")
+        {
+            await client.SendTextMessageAsync(
+                message.Chat.Id,
+                "Salom, bu bot siz izlagan rasm yoki videoni topib beradi."
+            );
+        }
+        if(message.Text.ToLower() == "salom")
+        {
+            await client.SendTextMessageAsync(
+                message.Chat.Id,
+                "Sog' bo'l bo'tam"
+            );
+        }
     }
 }

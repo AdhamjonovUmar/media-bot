@@ -61,8 +61,17 @@ public class DbStorageService : IStorageService
         }
     }
 
-    public Task<(bool IsSuccess, Exception exception)> UpdateAsync(User user)
+    public async Task<(bool IsSuccess, Exception exception)> UpdateAsync(User user)
     {
-        
+        try
+        {
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+            return (true, null);
+        }
+        catch (Exception e)
+        {
+            return(false, e); 
+        }
     }
 }

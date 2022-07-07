@@ -14,6 +14,7 @@ builder.Services.AddDbContext<BotDbContext>(
 builder.Services.AddSingleton<TelegramBotClient>(b => new TelegramBotClient(builder.Configuration.GetConnectionString("Token")));
 builder.Services.AddHostedService<Bot>();
 builder.Services.AddTransient<BotHandlers>();
+builder.Services.AddTransient<IStorageService, DbStorageService>();
 
 var app = builder.Build();
 

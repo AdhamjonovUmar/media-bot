@@ -8,10 +8,12 @@ namespace media_bot.Services;
 public class BotHandlers
 {
     private readonly ILogger<BotHandlers> _logger;
+    private readonly IStorageService _storage;
 
-    public BotHandlers(ILogger<BotHandlers> logger)
+    public BotHandlers(ILogger<BotHandlers> logger, IStorageService storage)
     {
         _logger = logger;
+        _storage = storage;
     }
 
     public Task HandleErrorAsync(ITelegramBotClient client, Exception exception, CancellationToken ctoken)  
@@ -49,13 +51,49 @@ public class BotHandlers
 
     private async Task BotOnMessageRecieved(ITelegramBotClient client, Message? message)
     {
-        if(message.Text == "/start")
+        var user = (await _storage.GetAsync(message.Chat.Id)).user;
+        if(user.InProcess == false)
         {
-            await client.SendTextMessageAsync(
-                message.Chat.Id,
-                "Salom, bu bot siz izlagan rasm yoki videoni topib beradi.",
-                replyMarkup: Buttons.Choices()
-            );
+            if(message.Text == "/start")
+            {
+                if(!(await _storage.ExistAsync(message.Chat.Id)))
+                {
+                    var newUser = new Entities.User(
+                        message.Chat.Id,
+                        message.From.Username,
+                        message.From.FirstName + " " + message.From.LastName){};
+                await _storage.InsertAsync(newUser);
+                }
+                await client.SendTextMessageAsync(
+                    message.Chat.Id,
+                    "Salom, bu bot siz izlagan rasm yoki videoni topib beradi.",
+                    replyMarkup: Buttons.Choices()
+                );
+            }
+            if(message.Text == "Video")
+            {
+                user.InProcess = true;
+                user.ContentType = "video";
+                await _storage.UpdateAsync(user);
+                await client.SendTextMessageAsync(
+                    user.ChatId,
+                    "Siz izlayotgan mavzuni ingliz tilida kiriting."
+                );
+            }
+            if(message.Text == "Photo")
+            {
+                user.InProcess = true;
+                user.ContentType = "photo";
+                await _storage.UpdateAsync(user);
+                await client.SendTextMessageAsync(
+                    user.ChatId,
+                    "Siz izlayotgan mavzuni ingliz tilida kiriting."
+                );
+            }
+        }
+        else
+        {
+            
         }
         
     }

@@ -52,7 +52,7 @@ public class BotHandlers
     private async Task BotOnMessageRecieved(ITelegramBotClient client, Message? message)
     {
         var user = (await _storage.GetAsync(message.Chat.Id)).user;
-        if(user.InProcess == false)
+        if(!user.InProcess)
         {
             if(message.Text == "/start")
             {

@@ -6,10 +6,13 @@ public class Videos
 {
     [JsonPropertyName("large")]
     public Large large { get; set; }
+
     [JsonPropertyName("medium")]
     public Medium Medium { get; set; }
+
     [JsonPropertyName("small")]
     public Small Small { get; set; }
+    
     [JsonPropertyName("tiny")]
     public Tiny Tiny { get; set; }
 }

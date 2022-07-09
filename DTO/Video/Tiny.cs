@@ -4,8 +4,14 @@ namespace media_bot.DTO.Video;
 public class Tiny
 {
     [JsonPropertyName("url")]
-    public string url { get; set; }
-    public int width { get; set; }
-    public int height { get; set; }
-    public int size { get; set; }
+    public string Url { get; set; }
+
+    [JsonPropertyName("width")]
+    public int Width { get; set; }
+
+    [JsonPropertyName("height")]
+    public int Height { get; set; }
+    
+    [JsonPropertyName("size")]
+    public int Size { get; set; }
 }

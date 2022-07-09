@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace media_bot.DTO.Photo;
 
-public class Image
+public class Photo
 {
     [JsonPropertyName("total")]
     public int Total { get; set; }

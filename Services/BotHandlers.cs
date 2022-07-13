@@ -9,11 +9,13 @@ public class BotHandlers
 {
     private readonly ILogger<BotHandlers> _logger;
     private readonly IStorageService _storage;
+    private readonly PixabayClient _client;
 
-    public BotHandlers(ILogger<BotHandlers> logger, IStorageService storage)
+    public BotHandlers(ILogger<BotHandlers> logger, IStorageService storage, PixabayClient client)
     {
         _logger = logger;
         _storage = storage;
+        _client = client;
     }
 
     public Task HandleErrorAsync(ITelegramBotClient client, Exception exception, CancellationToken ctoken)  
@@ -91,9 +93,21 @@ public class BotHandlers
                 );
             }
         }
+        // _client Pixabay API client
+        // client Telegram API client 
         else
         {
-            
+            if(user.ContentType == "video")
+            {
+                try
+                {
+                    var video = await client.GetVideoAsync()
+                }
+                catch (Exception e)
+                {
+                    
+                }
+            }
         }
         
     }

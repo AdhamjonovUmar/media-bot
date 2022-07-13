@@ -31,6 +31,15 @@ public class PixabayClient
 
     public async Task<(Photo photo, bool IsSuccess, Exception e)> GetPhotoAsync(string theme)
     {
-        
+        theme = theme.Replace(" ", "+");
+        var query = $"?key=28518000-50df4de24956c7d54939e78d7={theme}&image_types=photo&pretty=true";
+        using var httpResponse = await _client.GetAsync(query);
+        if(httpResponse.IsSuccessStatusCode)
+        {
+            var json = await httpResponse.Content.ReadAsStringAsync();
+            var data = JsonSerializer.Deserialize<Photo>(json);
+            return (data, true, null);
+        }
+        return (null, false, new Exception(httpResponse.ReasonPhrase));
     }
 }

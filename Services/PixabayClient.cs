@@ -26,7 +26,7 @@ public class PixabayClient
             var data = JsonSerializer.Deserialize<Video>(json);
             return (data, true, null);
         }
-        
+        return (null, false, new Exception(httpResponse.ReasonPhrase));
     }
 
     public async Task<(Photo photo, bool IsSuccess, Exception e)> GetPhotoAsync(string theme)

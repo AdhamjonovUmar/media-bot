@@ -119,7 +119,7 @@ public class BotHandlers
                         );
                     }
                 }
-                catch (Exception e)
+                catch(Exception e)
                 {
                     _logger.LogWarning(e.Message);
                     await client.SendTextMessageAsync(

@@ -128,6 +128,31 @@ public class BotHandlers
                     );
                 }
             }
+            else
+            {
+                try
+                {
+                    var photo = await _client.GetPhotoAsync(message.Text.ToLower());
+                    int i = 0;
+                    foreach(var p in photo.photo.Hits)
+                    {
+                        if(i == 10) break;
+                        await client.SendPhotoAsync(
+                            user.ChatId,
+                            p.LargeImageURL
+                        );
+                        i++;
+                    }
+                }
+                catch(Exception e)
+                {
+                    _logger.LogWarning(e.Message);
+                    await client.SendTextMessageAsync(
+                        user.ChatId,
+                        "Topilmadi :("
+                    );
+                }
+            }
         }
         
     }

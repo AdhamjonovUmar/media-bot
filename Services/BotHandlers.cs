@@ -53,7 +53,11 @@ public class BotHandlers
 
     private async Task BotOnMessageRecieved(ITelegramBotClient client, Message? message)
     {
-        var user = (await _storage.GetAsync(message.Chat.Id)).user;
+        var user = new Entities.User() { };
+        if(_storage.ExistAsync(message.Chat.Id).Result)
+        {
+            user = (await _storage.GetAsync(message.Chat.Id)).user;
+        }
         if(!user.InProcess)
         {
             if(message.Text == "/start")
@@ -94,18 +98,34 @@ public class BotHandlers
             }
         }
         // _client Pixabay API client
-        // client Telegram API client 
+        // client Telegram API client
         else
         {
+            user.InProcess = false;
+            await _storage.UpdateAsync(user);
             if(user.ContentType == "video")
             {
                 try
                 {
-                    var video = await client.GetVideoAsync()
+                    var video = await _client.GetVideoAsync(message.Text.ToLower());
+                    int i = 0;
+                    foreach(var v in video.video.Hits)
+                    {
+                        if(i == 10) break;
+                        i++;
+                        await client.SendVideoAsync(
+                            user.ChatId,
+                            v.Videos.Small.Url
+                        );
+                    }
                 }
                 catch (Exception e)
                 {
-                    
+                    _logger.LogWarning(e.Message);
+                    await client.SendTextMessageAsync(
+                        user.ChatId,
+                        "Topilmadi :("
+                    );
                 }
             }
         }

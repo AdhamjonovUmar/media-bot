@@ -112,11 +112,11 @@ public class BotHandlers
                     foreach(var v in video.video.Hits)
                     {
                         if(i == 10) break;
-                        i++;
-                        await client.SendVideoAsync(
+                        await client.SendAnimationAsync(
                             user.ChatId,
-                            v.Videos.Small.Url
+                            v.Videos.Tiny.Url
                         );
+                        i++;
                     }
                 }
                 catch(Exception e)
